@@ -274,7 +274,6 @@ func (z *Zip) extractFile(f File, to string, header *zip.FileHeader) error {
 	to = filepath.Join(to, header.Name)
 
 	existingFileInfo, errStat := os.Stat(to)
-
 	if errStat != nil && !os.IsNotExist(errStat) {
 		return fmt.Errorf("statting existing file: %v", errStat)
 	}
