@@ -44,6 +44,10 @@ type Zip struct {
 	// an error is returned if the file exists.
 	OverwriteExisting bool
 
+	// Whether to overwrite existing directories; if false,
+	// an error is returned if the folder exists.
+	OverwriteExistingDirectories bool
+
 	// Whether to make all the directories necessary
 	// to create a zip archive in the desired path.
 	MkdirAll bool
@@ -273,14 +277,40 @@ func (z *Zip) extractNext(to string) error {
 func (z *Zip) extractFile(f File, to string, header *zip.FileHeader) error {
 	to = filepath.Join(to, header.Name)
 
+	existingFileInfo, errStat := os.Stat(to)
+
+	if errStat != nil && !os.IsNotExist(errStat) {
+		return fmt.Errorf("statting existing file: %v", errStat)
+	}
+
 	// if a directory, no content; simply make the directory and return
 	if f.IsDir() {
-		return mkdir(to, f.Mode())
+		if os.IsNotExist(errStat) {
+			return mkdir(to, f.Mode())
+		} else {
+			if !z.OverwriteExisting {
+				return fmt.Errorf("file already exists: %s", to)
+			} else {
+				if !existingFileInfo.IsDir() {
+					errRm := os.RemoveAll(to)
+					if errRm != nil {
+						return fmt.Errorf("removing existing file: %v", errRm)
+					}
+				}
+
+				return mkdir(to, f.Mode())
+			}
+		}
 	}
 
 	// do not overwrite existing files, if configured
-	if !z.OverwriteExisting && fileExists(to) {
+	if !z.OverwriteExisting && !os.IsNotExist(errStat) {
 		return fmt.Errorf("file already exists: %s", to)
+	} else if existingFileInfo.IsDir() && !os.IsNotExist(errStat) {
+		err := os.RemoveAll(to)
+		if errStat != nil {
+			return fmt.Errorf("removing existing directory: %v", err)
+		}
 	}
 
 	// extract symbolic links as symbolic links
