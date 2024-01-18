@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/mholt/archiver/v5"
+	archiver "github.com/mholt/archiver/v3501lambda"
 )
 
 func TestIllegalPathErrorString(t *testing.T) {

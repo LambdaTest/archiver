@@ -1,4 +1,4 @@
-module github.com/mholt/archiver/v5
+module github.com/mholt/archiver/v3501lambda
 
 go 1.13
 
