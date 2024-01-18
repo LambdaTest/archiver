@@ -6,7 +6,7 @@ import (
 	"path"
 	"testing"
 
-	archiver "github.com/mholt/archiver/v3501lambda"
+	"github.com/LambdaTest/archiver/v3"
 )
 
 func requireRegularFile(t *testing.T, path string) os.FileInfo {

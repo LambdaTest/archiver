@@ -1,4 +1,4 @@
-module github.com/mholt/archiver/v3501lambda
+module github.com/LambdaTest/archiver/v3
 
 go 1.13
 

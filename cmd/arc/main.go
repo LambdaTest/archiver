@@ -10,8 +10,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/LambdaTest/archiver/v3"
 	"github.com/klauspost/compress/zip"
-	archiver "github.com/mholt/archiver/v3501lambda"
 	"github.com/nwaples/rardecode"
 )
 
